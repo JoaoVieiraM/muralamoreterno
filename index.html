@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amor Eterno Pets — Jardim do Céu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --gold: #A07820;
+      --gold-light: #C9A84C;
+      --gold-glow: rgba(160, 120, 32, 0.3);
+      --cream: #F5F0E8;
+      --cream-dim: rgba(245, 240, 232, 0.65);
+      --purple-dark: #1a0a2e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── STARS BACKGROUND ── */
+    #stars-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle linear infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0%   { opacity: 0.04; transform: scale(0.7); }
+      100% { opacity: 0.65; transform: scale(1.3); }
+    }
+
+    /* ── VIEWS ── */
+    .view { position: relative; z-index: 1; }
+    .hidden { display: none !important; }
+
+    /* ════════════════════════════════
+       MURAL — CABEÇALHO
+    ════════════════════════════════ */
+    .mural-header {
+      text-align: center;
+      padding: 72px 24px 48px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 50px var(--gold-glow);
+    }
+
+    .header-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 24px auto;
+    }
+
+    .tagline {
+      font-weight: 300;
+      font-size: 1.05rem;
+      color: var(--cream-dim);
+      letter-spacing: 0.14em;
+    }
+
+    /* ── GRID DO MURAL ── */
+    .mural-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 40px 80px;
+    }
+
+    @media (max-width: 900px) {
+      .mural-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 16px 24px 60px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .mural-grid {
+        grid-template-columns: 1fr;
+        padding: 16px 20px 60px;
+        gap: 20px;
+      }
+    }
+
+    /* ── CARD ── */
+    .pet-card {
+      background: rgba(255, 255, 255, 0.028);
+      border: 1px solid rgba(160, 120, 32, 0.28);
+      border-radius: 20px;
+      padding: 24px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .pet-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px var(--gold-glow), 0 12px 48px rgba(0, 0, 0, 0.6);
+      border-color: var(--gold);
+    }
+
+    .card-star-badge {
+      position: absolute;
+      top: 15px;
+      right: 17px;
+      font-size: 0.95rem;
+      color: var(--gold-light);
+      animation: star-pulse 2.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes star-pulse {
+      from { opacity: 0.35; transform: scale(0.85) rotate(-8deg); }
+      to   { opacity: 1;    transform: scale(1.2)  rotate(8deg);  }
+    }
+
+    .card-photo-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 22px rgba(160, 120, 32, 0.22);
+      margin-bottom: 18px;
+    }
+
+    .card-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s ease;
+    }
+
+    .pet-card:hover .card-photo-wrap img {
+      transform: scale(1.06);
+    }
+
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--cream);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .card-date {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--gold-light);
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    .mural-footer {
+      text-align: center;
+      padding: 0 20px 56px;
+      font-size: 0.76rem;
+      color: rgba(245, 240, 232, 0.18);
+      letter-spacing: 0.14em;
+    }
+
+    /* ════════════════════════════════
+       PÁGINA INDIVIDUAL
+    ════════════════════════════════ */
+    .individual-page {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 24px 90px;
+    }
+
+    /* Botão voltar */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 38px 0 16px;
+      color: var(--gold-light);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid rgba(160, 120, 32, 0.32);
+      border-radius: 30px;
+      padding: 9px 22px;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+      text-transform: uppercase;
+    }
+
+    .back-btn:hover {
+      background: rgba(160, 120, 32, 0.08);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    /* Hero */
+    .pet-hero {
+      text-align: center;
+      padding: 52px 0 64px;
+      position: relative;
+      min-height: 230px;
+    }
+
+    .hero-stars-wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-star-anim {
+      position: absolute;
+      color: var(--gold-light);
+      animation: float-star ease-in-out infinite;
+    }
+
+    @keyframes float-star {
+      0%, 100% { transform: translateY(0)    scale(1);   opacity: 0.3; }
+      50%       { transform: translateY(-14px) scale(1.25); opacity: 0.9; }
+    }
+
+    .pet-hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 9vw, 5.5rem);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.1;
+      text-shadow: 0 0 60px rgba(245, 240, 232, 0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pet-hero-date {
+      font-weight: 300;
+      font-size: 0.88rem;
+      color: var(--gold-light);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Título de seção */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.32rem;
+      color: var(--gold-light);
+      margin-bottom: 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(160, 120, 32, 0.55), transparent);
+    }
+
+    /* Galeria */
+    .gallery-section {
+      margin-bottom: 62px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 560px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .gallery-item {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid rgba(160, 120, 32, 0.38);
+      cursor: zoom-in;
+      aspect-ratio: 1 / 1;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .gallery-item:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 22px var(--gold-glow);
+      transform: scale(1.025);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Quem era */
+    .who-section {
+      margin-bottom: 62px;
+    }
+
+    .who-text {
+      font-size: 1.05rem;
+      line-height: 1.95;
+      color: var(--cream-dim);
+      font-weight: 300;
+    }
+
+    /* Carta */
+    .letter-section {
+      background: var(--purple-dark);
+      border-radius: 20px;
+      padding: 54px 54px;
+      margin-bottom: 62px;
+      border: 1px solid rgba(110, 60, 200, 0.18);
+      box-shadow: 0 0 70px rgba(26, 10, 46, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .letter-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 220px;
+      background: radial-gradient(ellipse at 50% -5%, rgba(138, 86, 255, 0.13) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 560px) {
+      .letter-section { padding: 38px 26px; }
+    }
+
+    .letter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--gold-light);
+      letter-spacing: 0.18em;
+      margin-bottom: 38px;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.06rem;
+      line-height: 2.15;
+      color: var(--cream);
+      white-space: pre-line;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Rodapé individual */
+    .individual-footer {
+      text-align: center;
+      padding: 30px 0 0;
+      font-size: 0.82rem;
+      color: rgba(245, 240, 232, 0.28);
+      letter-spacing: 0.12em;
+      border-top: 1px solid rgba(160, 120, 32, 0.12);
+    }
+
+    /* ════════════════════════════════
+       LIGHTBOX
+    ════════════════════════════════ */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.96);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      animation: lb-in 0.2s ease;
+    }
+
+    @keyframes lb-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1.5px solid rgba(160, 120, 32, 0.38);
+      cursor: default;
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+    }
+
+    #lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      color: var(--cream);
+      font-size: 1.6rem;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      line-height: 1;
+      font-family: 'Lato', sans-serif;
+    }
+
+    #lightbox-close:hover { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div id="stars-bg"></div>
+
+<!-- ══════════════════════════════════════
+     MURAL COLETIVO
+══════════════════════════════════════ -->
+<div id="mural-view" class="view">
+  <header class="mural-header">
+    <div class="logo">Amor Eterno Pets</div>
+    <div class="header-divider"></div>
+    <div class="tagline">Um lugar onde eles vivem para sempre 🐾</div>
+  </header>
+  <div class="mural-grid" id="mural-grid"></div>
+  <div class="mural-footer">Jardim do Céu &nbsp;·&nbsp; Amor Eterno Pets</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PÁGINA INDIVIDUAL DO PET
+══════════════════════════════════════ -->
+<div id="individual-view" class="view hidden">
+  <div class="individual-page">
+    <button class="back-btn" id="back-btn">← Voltar ao jardim</button>
+    <div id="pet-content"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LIGHTBOX
+══════════════════════════════════════ -->
+<div id="lightbox" class="hidden">
+  <button id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DADOS DOS PETS
+   Edite este array para adicionar novos membros.
+   ═══════════════════════════════════════════════════ */
+const pets = [
+  {
+    id: "magrela",
+    nome: "Magrela",
+    genero: "f",           // "f" → ela  |  "m" → ele
+    tutor: "July",
+    data: "22 de Janeiro de 2026",
+    foto: "assets/magrela.jpeg",
+    descricao: "Dona da rua, seletiva e cheia de personalidade. Magrela escolheu sua família com a certeza de quem sabe exatamente onde quer estar. Era brava pra fora, mas inteirinha por dentro quando estava com as pessoas que amava. Ficava com as patinhas cruzadas — o jeito dela de dizer que estava bem, em paz, e que não precisava de mais nada.",
+    fotos: [
+      "assets/magrela.jpeg",
+      "assets/magrela2.jpeg"
+    ],
+    carta: `July,
+
+Eu sei que você esperava por mim. Todo dia, na hora de dormir, eu sabia que você ia vir. Ficava ali, do meu jeito, com as patinhas cruzadas. Que é o jeito mais meu de dizer que estava bem, que estava em paz, que estava com você. Não precisava de mais nada.
+
+A casa ficou diferente, eu sei. Os cantos, os horários, o silêncio onde tinha rotina. Isso é real e eu não vou fingir que não é. Mas eu preciso que você saiba que esse vazio tem o meu formato. E formato não some, ele só muda de lugar.
+
+Você me chamava de pantera cor de rosa. Só você podia. Porque só você me via assim: brava pra fora, mas inteira por dentro quando estava com você e com ele. Eu escolhi vocês dois com tudo que eu tinha. E escolha assim não tem data de validade.
+
+Eu continuo sendo sua. Do jeito que o amor continua sendo: sem precisar de caminha, sem precisar de corpo. Só presença.
+
+Sua pantera cor de rosa, pra sempre,
+Magrela 🐾`
+  }
+
+  // ── Para adicionar um novo pet, copie o bloco abaixo: ──
+  // {
+  //   id: "nome-unico",
+  //   nome: "Nome do Pet",
+  //   genero: "m",
+  //   tutor: "Nome do Tutor",
+  //   data: "DD de Mês de AAAA",
+  //   foto: "assets/foto-principal.jpg",
+  //   descricao: "Quem ele/ela era...",
+  //   fotos: ["assets/foto1.jpg", "assets/foto2.jpg"],
+  //   carta: `Texto da carta aqui.`
+  // }
+];
+
+/* ═══════════════════════════════════════════════════
+   ESTRELAS DE FUNDO
+   ═══════════════════════════════════════════════════ */
+function initStars() {
+  const container = document.getElementById('stars-bg');
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < 200; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = (Math.random() * 100) + '%';
+    star.style.top  = (Math.random() * 100) + '%';
+    const size = Math.random() * 2.2 + 0.4;
+    star.style.width  = size + 'px';
+    star.style.height = size + 'px';
+    star.style.animationDelay    = (Math.random() * 7)   + 's';
+    star.style.animationDuration = (Math.random() * 4 + 2) + 's';
+    fragment.appendChild(star);
+  }
+
+  container.appendChild(fragment);
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDERIZAR MURAL
+   ═══════════════════════════════════════════════════ */
+function renderMural() {
+  const grid = document.getElementById('mural-grid');
+  grid.innerHTML = '';
+
+  pets.forEach(pet => {
+    const card = document.createElement('div');
+    card.className = 'pet-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Ver memorial de ${pet.nome}`);
+
+    card.innerHTML = `
+      <span class="card-star-badge" aria-hidden="true">✦</span>
+      <div class="card-photo-wrap">
+        <img src="${pet.foto}" alt="Foto de ${pet.nome}" loading="lazy">
+      </div>
+      <div class="card-name">${pet.nome}</div>
+      <div class="card-date">✦ ${pet.data} ✦</div>
+    `;
+
+    card.addEventListener('click', () => showPet(pet.id));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        showPet(pet.id);
+      }
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVEGAÇÃO
+   ═══════════════════════════════════════════════════ */
+function showMural() {
+  document.getElementById('individual-view').classList.add('hidden');
+  document.getElementById('mural-view').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showPet(id) {
+  const pet = pets.find(p => p.id === id);
+  if (!pet) return;
+
+  const pronoun = pet.genero === 'f' ? 'ela' : 'ele';
+
+  /* Estrelinhas flutuantes no hero */
+  const starDefs = [
+    { top: '10%', left: '5%',  size: '1.3rem', dur: '4.2s', delay: '0s'   },
+    { top: '18%', left: '91%', size: '0.85rem', dur: '3.5s', delay: '0.9s' },
+    { top: '50%', left: '3%',  size: '1rem',   dur: '5s',   delay: '1.6s' },
+    { top: '65%', left: '94%', size: '0.9rem', dur: '3.8s', delay: '0.4s' },
+    { top: '35%', left: '11%', size: '0.72rem', dur: '4.5s', delay: '2.1s' },
+    { top: '78%', left: '87%', size: '1.1rem', dur: '3.2s', delay: '1.1s' },
+    { top: '88%', left: '14%', size: '0.78rem', dur: '4.1s', delay: '1.8s' },
+  ];
+
+  const starsHTML = starDefs.map(s =>
+    `<span class="hero-star-anim" aria-hidden="true" style="top:${s.top};left:${s.left};font-size:${s.size};animation-duration:${s.dur};animation-delay:${s.delay}">✦</span>`
+  ).join('');
+
+  /* Galeria */
+  const photos = (pet.fotos || []).slice(0, 6);
+  const galleryHTML = photos.length
+    ? `<section class="gallery-section">
+        <div class="section-title">✦ Memórias</div>
+        <div class="gallery-grid">
+          ${photos.map((src, i) => `
+            <div class="gallery-item" role="button" tabindex="0" aria-label="Ampliar foto ${i + 1}" data-src="${src}">
+              <img src="${src}" alt="Foto de ${pet.nome}" loading="lazy">
+            </div>`).join('')}
+        </div>
+      </section>`
+    : '';
+
+  /* Monta o conteúdo */
+  document.getElementById('pet-content').innerHTML = `
+    <div class="pet-hero">
+      <div class="hero-stars-wrap">${starsHTML}</div>
+      <div class="pet-hero-name">${pet.nome}</div>
+      <div class="pet-hero-date">✦ Partiu em ${pet.data} ✦</div>
+    </div>
+
+    ${galleryHTML}
+
+    <section class="who-section">
+      <div class="section-title">🐾 Quem ${pronoun} era</div>
+      <p class="who-text">${pet.descricao}</p>
+    </section>
+
+    <section class="letter-section">
+      <div class="letter-title">— Uma mensagem de ${pet.nome} —</div>
+      <div class="letter-text" id="letter-text-node"></div>
+    </section>
+
+    <div class="individual-footer">
+      Amor Eterno Pets 🐾 O amor não acaba, ele muda de forma.
+    </div>
+  `;
+
+  /* Injeta a carta como texto puro (evita XSS) */
+  document.getElementById('letter-text-node').textContent = pet.carta;
+
+  /* Listeners da galeria */
+  document.querySelectorAll('.gallery-item').forEach(item => {
+    const open = () => openLightbox(item.dataset.src);
+    item.addEventListener('click', open);
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+  });
+
+  /* Troca de view */
+  document.getElementById('mural-view').classList.add('hidden');
+  document.getElementById('individual-view').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════
+   LIGHTBOX
+   ═══════════════════════════════════════════════════ */
+function openLightbox(src) {
+  const lb  = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = src;
+  lb.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+  document.getElementById('lightbox-img').src = '';
+  document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   EVENT LISTENERS GLOBAIS
+   ═══════════════════════════════════════════════════ */
+document.getElementById('back-btn').addEventListener('click', showMural);
+
+document.getElementById('lightbox').addEventListener('click', closeLightbox);
+document.getElementById('lightbox-close').addEventListener('click', e => {
+  e.stopPropagation();
+  closeLightbox();
+});
+document.getElementById('lightbox-img').addEventListener('click', e => {
+  e.stopPropagation();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+/* ═══════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════ */
+initStars();
+renderMural();
+</script>
+</body>
+</html>
