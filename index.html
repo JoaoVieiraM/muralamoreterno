@@ -334,6 +334,7 @@
       line-height: 1.95;
       color: var(--cream-dim);
       font-weight: 300;
+      white-space: pre-line;
     }
 
     /* Carta */
@@ -383,6 +384,70 @@
       white-space: pre-line;
       position: relative;
       z-index: 1;
+    }
+
+    /* Seção cadeado (carta ainda não escrita) */
+    .locked-section {
+      background: var(--purple-dark);
+      border-radius: 20px;
+      padding: 54px 54px;
+      margin-bottom: 62px;
+      border: 1px solid rgba(110, 60, 200, 0.18);
+      box-shadow: 0 0 70px rgba(26, 10, 46, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .locked-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 220px;
+      background: radial-gradient(ellipse at 50% -5%, rgba(138, 86, 255, 0.13) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .lock-icon {
+      font-size: 2.6rem;
+      animation: lock-pulse 3s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes lock-pulse {
+      from { opacity: 0.5; transform: scale(0.95); filter: drop-shadow(0 0 4px rgba(160, 120, 32, 0.3)); }
+      to   { opacity: 1;   transform: scale(1.05); filter: drop-shadow(0 0 14px rgba(160, 120, 32, 0.7)); }
+    }
+
+    .locked-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--gold-light);
+      letter-spacing: 0.18em;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .locked-subtitle {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.88rem;
+      color: rgba(245, 240, 232, 0.35);
+      letter-spacing: 0.1em;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 560px) {
+      .locked-section { padding: 38px 26px; }
     }
 
     /* Rodapé individual */
@@ -509,6 +574,31 @@ Eu continuo sendo sua. Do jeito que o amor continua sendo: sem precisar de camin
 
 Sua pantera cor de rosa, pra sempre,
 Magrela 🐾`
+  },
+  {
+    id: "kitty",
+    nome: "Kitty",
+    genero: "f",
+    tutor: "",
+    data: "1 de Fevereiro de 2026",
+    foto: "assets/kitty.jpeg",
+    descricao: `Sabia vários truques ensinados pelo pai da tutora: dar a patinha, deitar, rolar, pular. Tinha um truque especial chamado "pula foquinha", pulando com o focinho na palma da mão dele.
+
+Enlouquecia quando ouvia a palavra churrasco.
+
+Tinha uma mania inexplicável de colocar as bolinhas dela dentro do pote de água e de ração, deixando tudo lotado de brinquedo, sem fazer sentido nenhum.
+
+Tinha cócegas na patinha. Adorava andar rebolando.
+
+Era uma cachorrinha influencer: tinha Instagram e ganhava presentes do TikTok.`,
+    fotos: [
+      "assets/kitty.jpeg",
+      "assets/kitty2.jpeg",
+      "assets/kitty3.jpeg",
+      "assets/kitty4.jpeg",
+      "assets/kitty5.jpeg"
+    ],
+    carta: ""
   }
 
   // ── Para adicionar um novo pet, copie o bloco abaixo: ──
@@ -568,7 +658,7 @@ function renderMural() {
         <img src="${pet.foto}" alt="Foto de ${pet.nome}" loading="lazy">
       </div>
       <div class="card-name">${pet.nome}</div>
-      <div class="card-date">✦ ${pet.data} ✦</div>
+      ${pet.data ? `<div class="card-date">✦ ${pet.data} ✦</div>` : ''}
     `;
 
     card.addEventListener('click', () => showPet(pet.id));
@@ -632,7 +722,7 @@ function showPet(id) {
     <div class="pet-hero">
       <div class="hero-stars-wrap">${starsHTML}</div>
       <div class="pet-hero-name">${pet.nome}</div>
-      <div class="pet-hero-date">✦ Partiu em ${pet.data} ✦</div>
+      ${pet.data ? `<div class="pet-hero-date">✦ Partiu em ${pet.data} ✦</div>` : ''}
     </div>
 
     ${galleryHTML}
@@ -642,10 +732,18 @@ function showPet(id) {
       <p class="who-text">${pet.descricao}</p>
     </section>
 
+    ${pet.carta ? `
     <section class="letter-section">
       <div class="letter-title">— Uma mensagem de ${pet.nome} —</div>
       <div class="letter-text" id="letter-text-node"></div>
     </section>
+    ` : `
+    <section class="locked-section">
+      <div class="lock-icon">🔒</div>
+      <div class="locked-title">Uma mensagem de ${pet.nome}</div>
+      <div class="locked-subtitle">Em breve</div>
+    </section>
+    `}
 
     <div class="individual-footer">
       Amor Eterno Pets 🐾 O amor não acaba, ele muda de forma.
@@ -653,7 +751,8 @@ function showPet(id) {
   `;
 
   /* Injeta a carta como texto puro (evita XSS) */
-  document.getElementById('letter-text-node').textContent = pet.carta;
+  const letterNode = document.getElementById('letter-text-node');
+  if (letterNode) letterNode.textContent = pet.carta;
 
   /* Listeners da galeria */
   document.querySelectorAll('.gallery-item').forEach(item => {
